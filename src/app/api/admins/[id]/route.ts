@@ -169,7 +169,15 @@ export async function DELETE(
       return NextResponse.json({ error: 'Admin not found' }, { status: 404 });
     }
     
-    // Check if this is the last super_admin
+    // Check if this is the last admin account (regardless of role)
+    const adminCount = await db.collection('admins').countDocuments();
+    if (adminCount <= 1) {
+      return NextResponse.json({ 
+        error: 'Cannot delete the last admin account. At least one admin account must exist in the system.' 
+      }, { status: 400 });
+    }
+    
+    // Additional check for super_admin role
     if (adminExists.role === 'super_admin') {
       const superAdminCount = await db.collection('admins').countDocuments({ role: 'super_admin' });
       if (superAdminCount <= 1) {

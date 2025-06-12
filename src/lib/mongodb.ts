@@ -51,6 +51,40 @@ async function initializeDatabase(db: Db) {
         console.log('Products collection exists');
       }
     }
+    
+    // Check if admins collection exists and has at least one admin
+    const adminCollection = await db.listCollections({ name: 'admins' }).toArray();
+    if (adminCollection.length === 0) {
+      console.log('Creating admins collection...');
+      await db.createCollection('admins');
+    }
+    
+    // Check if there are any admin accounts
+    const adminCount = await db.collection('admins').countDocuments();
+    if (adminCount === 0) {
+      console.log('No admin accounts found. Creating default admin account...');
+      
+      // Create default admin account
+      const bcrypt = require('bcryptjs');
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash('admin', salt);
+      
+      const now = new Date();
+      const defaultAdmin = {
+        name: 'Default Admin',
+        email: 'admin@gmail.com',
+        password: hashedPassword,
+        role: 'super_admin',
+        active: true,
+        status: 'active',
+        lastLogin: null,
+        createdAt: now,
+        updatedAt: now
+      };
+      
+      await db.collection('admins').insertOne(defaultAdmin);
+      console.log('Default admin account created successfully');
+    }
   } catch (error) {
     console.error('Error initializing database:', error);
     throw error;

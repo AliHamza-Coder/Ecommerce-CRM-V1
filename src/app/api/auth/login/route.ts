@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     // If admin not found or inactive
     if (!admin || admin.status === 'inactive') {
       return NextResponse.json({ 
-        error: 'Invalid credentials' 
+        error: 'Invalid candidate' 
       }, { status: 401 });
     }
     
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
       return NextResponse.json({ 
-        error: 'Invalid credentials' 
+        error: 'Invalid password' 
       }, { status: 401 });
     }
     

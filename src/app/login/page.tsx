@@ -109,7 +109,7 @@ export default function LoginPage() {
         })
       } else {
         // Handle login failure without throwing error to console
-        let errorMessage = "Invalid email or password. Please try again."
+        let errorMessage = "Login failed. Please try again."
         
         if (result.error) {
           if (result.error === 'Network or server error') {
@@ -150,7 +150,7 @@ export default function LoginPage() {
             <div className="h-14 w-14 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
               <ShieldCheckIcon className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold mb-2">CRM By Ali Hamza</h1>
+            <h1 className="text-4xl font-bold mb-2">Reliable CRM</h1>
             <p className="text-white/80 text-lg">Professional Customer Relationship Management System</p>
           </div>
           
@@ -177,7 +177,7 @@ export default function LoginPage() {
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
-              <p className="text-sm text-white/80">Role-based security access</p>
+              <p className="text-sm text-white/80">Secure long term use CRM</p>
             </div>
           </div>
           
@@ -195,7 +195,7 @@ export default function LoginPage() {
               </div>
             </div>
             <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              CRM By Ali Hamza
+              Reliable CRM
             </h1>
           </div>
           
@@ -281,7 +281,7 @@ export default function LoginPage() {
             
             <div className="mt-8 text-center">
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                © 2025 CRM By Ali Hamza. All rights reserved.
+                © 2025 Reliable CRM. All rights reserved.
               </p>
             </div>
           </div>

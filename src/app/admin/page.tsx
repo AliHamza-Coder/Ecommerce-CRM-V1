@@ -26,9 +26,18 @@ import {
   EyeOff, 
   Edit, 
   Trash2,
-  UserCog
+  UserCog,
+  AlertTriangle
 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog"
 
 const adminFormSchema = z.object({
   name: z.string().min(2, {
@@ -70,6 +79,8 @@ export default function AdminPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [adminToDelete, setAdminToDelete] = useState<string | null>(null);
   
   // Function to fetch admins
   const fetchAdmins = async () => {
@@ -169,39 +180,51 @@ async function onSubmit(values: AdminFormValues) {
     }
   }
   
-  async function handleDeleteAdmin(id: string) {
-    if (confirm("Are you sure you want to delete this admin?")) {
-      try {
-        setIsLoading(true);
-        
-        const response = await fetch(`/api/admins/${id}`, {
-          method: "DELETE",
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to delete admin");
-        }
-        
-        // Remove the admin from the list
-        setAdmins(admins.filter(admin => admin._id !== id));
-        
+  function showDeleteConfirmation(id: string) {
+    setAdminToDelete(id);
+    setDeleteDialogOpen(true);
+  }
+  
+  async function handleDeleteAdmin() {
+    if (!adminToDelete) return;
+    
+    try {
+      setIsLoading(true);
+      
+      const response = await fetch(`/api/admins/${adminToDelete}`, {
+        method: "DELETE",
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        // Don't throw error, just show toast with the error message
         toast({
-          title: "Admin Deleted",
-          description: "Admin account has been deleted successfully.",
-        });
-      } catch (error: any) {
-        console.error("Error deleting admin:", error);
-        
-        toast({
-          title: "Error",
-          description: error.message || "Failed to delete admin. Please try again.",
+          title: "Cannot Delete Admin",
+          description: data.error || "Failed to delete admin. Please try again.",
           variant: "destructive",
         });
-      } finally {
-        setIsLoading(false);
+        return;
       }
+      
+      // Remove the admin from the list
+      setAdmins(admins.filter(admin => admin._id !== adminToDelete));
+      
+      toast({
+        title: "Admin Deleted",
+        description: "Admin account has been deleted successfully.",
+      });
+    } catch (error: any) {
+      // Handle unexpected errors
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+      setDeleteDialogOpen(false);
+      setAdminToDelete(null);
     }
   }
   
@@ -211,6 +234,44 @@ async function onSubmit(values: AdminFormValues) {
   
   return (
     <div className="flex-1 space-y-6 p-8 bg-white dark:bg-slate-900 text-slate-900 dark:text-white min-h-screen">
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-md backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-0 shadow-xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
+              <AlertTriangle className="h-5 w-5 text-blue-600 dark:text-violet-500" />
+              Confirm Admin Deletion
+            </DialogTitle>
+            <DialogDescription className="text-slate-600 dark:text-slate-400">
+              Are you sure you want to delete this admin account? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex items-center justify-end space-x-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteAdmin}
+              className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-medium shadow-lg hover:shadow-blue-500/20 hover:from-blue-700 hover:to-indigo-800 transition-all duration-300"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  Deleting...
+                </>
+              ) : (
+                "Confirm Delete"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -293,7 +354,7 @@ async function onSubmit(values: AdminFormValues) {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleDeleteAdmin(admin._id)}
+                              onClick={() => showDeleteConfirmation(admin._id)}
                               className="bg-transparent border-slate-200 dark:border-slate-700 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-all duration-200 hover:scale-105"
                             >
                               <Trash2 className="h-4 w-4" />
