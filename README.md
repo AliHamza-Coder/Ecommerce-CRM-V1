@@ -84,9 +84,14 @@ MONGODB_URI=mongodb+srv://username:password@your-cluster.mongodb.net/?retryWrite
 #### MongoDB Setup:
 1. Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 2. Set up a database user with read/write permissions
-3. Under Database Deployments, click "Connect" on your cluster
-4. Select "Connect your application" and copy the connection string
-5. Replace `<username>` and `<password>` with your database user credentials
+3. **Configure Network Access (IP Whitelist):**
+   - Go to "Network Access" in the left sidebar
+   - Click "Add IP Address"
+   - For development: Add your current IP address or use `0.0.0.0/0` (allows access from anywhere - **not recommended for production**)
+   - For production: Add only specific IP addresses that need access to your database
+4. Under Database Deployments, click "Connect" on your cluster
+5. Select "Connect your application" and copy the connection string
+6. Replace `<username>` and `<password>` with your database user credentials
 
 ## 🛡️ Security Best Practices
 
@@ -94,6 +99,8 @@ MONGODB_URI=mongodb+srv://username:password@your-cluster.mongodb.net/?retryWrite
 - Store sensitive keys and secrets securely
 - Use environment variable management in your deployment platform
 - Regularly rotate your API keys and secrets
+- **MongoDB Security**: Configure IP whitelist properly - avoid using `0.0.0.0/0` in production environments
+- Only allow database access from trusted IP addresses
 
 ## 📘 Learn More
 
