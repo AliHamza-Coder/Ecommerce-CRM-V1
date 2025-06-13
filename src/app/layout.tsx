@@ -56,10 +56,10 @@ export default function RootLayout({
                 ) : isLoginPage ? (
                   children
                 ) : (
-                  <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-all duration-500">
+                  <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
                     <SidebarNav />
-                    <div className="md:pl-[260px] lg:pl-[300px] transition-all duration-300">
-                      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white/80 dark:bg-slate-950/80 backdrop-blur-md px-4 md:px-6 border-slate-200/60 dark:border-slate-800/60 shadow-sm transition-all duration-300">
+                    <div className="md:pl-[260px] lg:pl-[300px]">
+                      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white/80 dark:bg-slate-950/80 backdrop-blur-md px-4 md:px-6 border-slate-200/60 dark:border-slate-800/60 shadow-sm">
                         <div className="flex-1">
                           {/* Left side of header - can add title or breadcrumbs here */}
                         </div>
@@ -68,7 +68,7 @@ export default function RootLayout({
                           <ModeToggle />
                         </div>
                       </header>
-                      <main className="min-h-[calc(100vh-4rem)] transition-all duration-300">
+                      <main className="min-h-[calc(100vh-4rem)]">
                         {children}
                       </main>
                     </div>

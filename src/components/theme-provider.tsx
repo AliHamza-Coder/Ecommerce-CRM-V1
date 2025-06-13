@@ -9,7 +9,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       enableSystem={true}
       themes={["light", "dark", "system"]}
       attribute="class"
-      disableTransitionOnChange={false}
+      disableTransitionOnChange={true}
       storageKey="dashboard-theme"
     >
       {children}
